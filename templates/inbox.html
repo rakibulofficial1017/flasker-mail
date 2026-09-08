@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block head %} <title>Inbox</title>
+
+<style>
+body { 
+  margin: 0; 
+  background-color: #f4f6f8; 
+  font-family: Arial, sans-serif; 
+  color: #222; 
+}
+
+.inbox-container { 
+  max-width: 900px; 
+  margin: 50px auto; 
+  background-color: white; 
+  border-radius: 12px; 
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); 
+  overflow: hidden; 
+}
+
+.header-top { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+}
+
+.inbox-header { 
+  padding: 25px 30px; 
+  border-bottom: 1px solid #ddd; 
+}
+
+.inbox-header h1 { 
+  margin: 0; 
+  font-size: 26px; 
+}
+
+.email-list { 
+  list-style: none; 
+  padding: 0; 
+  margin: 0; 
+}
+
+.email { 
+  display: flex; 
+  align-items: center; 
+  padding: 18px 25px; 
+  border-bottom: 1px solid #eee; 
+  cursor: pointer; 
+  transition: background-color 0.15s; 
+  text-decoration: none; 
+  color: inherit; 
+}
+
+.email:hover { 
+  background-color: #f1f5f9; 
+}
+
+.email-sender { 
+  width: 180px; 
+  flex-shrink: 0; 
+}
+
+.email-title { 
+  flex: 1; 
+}
+
+.email-time { 
+  color: #777; 
+  font-size: 13px; 
+  margin-left: 20px; 
+}
+
+.read { 
+  background-color: #f5f5f5; 
+  color: #666; 
+}
+
+.unread { 
+  background-color: white; 
+  font-weight: bold; 
+}
+
+.unread .email-time { 
+  color: #444; 
+  font-weight: normal; 
+}
+
+.empty-inbox { 
+  padding: 50px; 
+  text-align: center; 
+  color: #777; 
+}
+
+.sent-button, .compose-button, .logout-button { 
+  display: inline-block; 
+  padding: 8px 14px; 
+  border-radius: 6px; 
+  text-decoration: none; 
+  font-size: 14px; 
+}
+
+.compose-button { 
+  color: white; 
+  margin-right: 8px; 
+}
+
+
+
+.sent-button, .logout-button { 
+  background-color: #eee; 
+  color: #333; 
+}
+
+.sent-button {
+  margin-right: 8px;
+}
+
+.sent-button:hover, .logout-button:hover { 
+  background-color: #ddd; 
+}
+
+#delete-option { 
+  padding: 10px 20px; 
+  cursor: pointer; 
+  color: #d00; 
+  font-size: 14px; 
+}
+
+#delete-option:hover { 
+  background-color: #f5f5f5; 
+}
+
+.search-form {
+    display: flex;
+    margin-top: 20px;
+    gap: 8px;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.search-form button {
+    width: auto;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+
+
+.compose-button {
+    background-color: #22c55e;
+}
+
+.compose-button:hover {
+    background-color: #16a34a;
+}
+.search-form button {
+    background-color: #22c55e;
+}
+
+.search-form button:hover {
+    background-color: #16a34a;
+}
+
+</style>
+
+
+{% endblock %}
+
+{% block body %}
+<div class="inbox-container">
+
+    <div class="inbox-header">
+        <form action="{{ url_for('inbox') }}" method="GET" class="search-form">
+            <input
+                type="text"
+                name="q"
+                placeholder="Search emails..."
+                value="{{ query }}"
+            >
+
+            <button type="submit">
+                Search
+            </button>
+        </form>
+        <div class="header-top">
+
+            <h1>Inbox ({{ inbox_count["count"] }})</h1>
+
+            <div>
+                <a href="{{ url_for('sent') }}" class="sent-button">
+                    Sent
+                </a>
+
+                <a href="{{ url_for('compose') }}" class="compose-button">
+                    Compose
+                </a>
+
+                <a href="{{ url_for('logout') }}" class="logout-button">
+                    Logout
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+    {% if emails %}
+
+        <ul class="email-list">
+
+            {% for i in emails %}
+            <!-- <li class="email {% if i['is_read'] %}read{% else %}unread{% endif %}"> -->
+            <a href="{{ url_for('email', email_id=i['email_id']) }}"
+            class="email {% if i['is_read'] %}read{% else %}unread{% endif %}"
+            data-email-id="{{ i['email_id'] }}">
+
+                <div class="email-sender">
+                    {{ i["sender_name"] }}
+                </div>
+
+                <div class="email-title">
+                    {{ i["title"] }}
+                </div>
+
+                <div class="email-time">
+                    {{ i["time_sent"] }}
+                </div>
+
+            </a>
+            <!-- </li> -->
+            {% endfor %}
+
+        </ul>
+
+    {% else %}
+
+        <div class="empty-inbox">
+            Your inbox is empty.
+        </div>
+
+    {% endif %}
+
+</div>
+<script>
+    const contextMenu = document.createElement("div");
+
+    contextMenu.innerHTML = `
+        <div id="delete-option">Delete</div>
+    `;
+
+    contextMenu.style.position = "fixed";
+    contextMenu.style.display = "none";
+    contextMenu.style.backgroundColor = "white";
+    contextMenu.style.border = "1px solid #ddd";
+    contextMenu.style.borderRadius = "8px";
+    contextMenu.style.boxShadow = "0 4px 15px rgba(0, 0, 0, 0.15)";
+    contextMenu.style.padding = "5px 0";
+    contextMenu.style.zIndex = "1000";
+
+    document.body.appendChild(contextMenu);
+
+
+    let selectedEmailId = null;
+
+
+    document.querySelectorAll(".email").forEach(email => {
+
+        email.addEventListener("contextmenu", function(event) {
+
+            event.preventDefault();
+
+            selectedEmailId = this.dataset.emailId;
+
+            contextMenu.style.left = event.clientX + "px";
+            contextMenu.style.top = event.clientY + "px";
+            contextMenu.style.display = "block";
+
+        });
+
+    });
+
+
+    document.getElementById("delete-option").addEventListener("click", function() {
+        if (selectedEmailId !== null) {
+            const form = document.createElement("form");
+
+            form.method = "POST";
+            form.action = "/delete/" + selectedEmailId;
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+
+
+    document.addEventListener("click", function() {
+        contextMenu.style.display = "none";
+    });
+</script>
+
+{% endblock %}

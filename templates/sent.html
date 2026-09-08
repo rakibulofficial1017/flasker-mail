@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block head %}
+
+<title>Sent</title>
+
+<style>
+    body {
+        margin: 0;
+        background-color: #f4f6f8;
+        font-family: Arial, sans-serif;
+        color: #222;
+    }
+
+    .sent-container {
+        max-width: 900px;
+        margin: 50px auto;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .sent-header {
+        padding: 25px 30px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .sent-header h1 {
+        margin: 0;
+        font-size: 26px;
+    }
+
+    .email-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .email {
+        display: flex;
+        align-items: center;
+        padding: 18px 25px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+        transition: background-color 0.15s;
+
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .email:hover {
+        background-color: #f1f5f9;
+    }
+
+    .email-recipient {
+        width: 180px;
+        flex-shrink: 0;
+    }
+
+    .email-title {
+        flex: 1;
+    }
+
+    .email-time {
+        color: #777;
+        font-size: 13px;
+        margin-left: 20px;
+    }
+
+    .empty-sent {
+        padding: 50px;
+        text-align: center;
+        color: #777;
+    }
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+.sent-button, .compose-button, .logout-button { 
+  display: inline-block; 
+  padding: 8px 14px; 
+  border-radius: 6px; 
+  text-decoration: none; 
+  font-size: 14px; 
+}
+
+.compose-button { 
+  background-color: #222; 
+  color: white; 
+  margin-right: 8px; 
+}
+
+.compose-button:hover { 
+  background-color: #444; 
+}
+
+.sent-button, .logout-button { 
+  background-color: #eee; 
+  color: #333; 
+}
+
+.sent-button {
+  margin-right: 8px;
+}
+
+.sent-button:hover, .logout-button:hover { 
+  background-color: #ddd; 
+}
+
+</style>
+
+{% endblock %}
+
+
+{% block body %}
+
+<div class="sent-container">
+
+    <div class="sent-header">
+
+        <div class="header-top">
+
+            <h1>Sent</h1>
+
+            <div>
+                <a href="{{ url_for('inbox') }}" class="sent-button">
+                    Inbox
+                </a>
+
+                <a href="{{ url_for('compose') }}" class="compose-button">
+                    Compose
+                </a>
+
+                <a href="{{ url_for('logout') }}" class="logout-button">
+                    Logout
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+    {% if emails %}
+
+        <ul class="email-list">
+
+            {% for i in emails %}
+
+                <a href="{{ url_for('email', email_id=i['email_id']) }}"
+                   class="email">
+
+                    <div class="email-recipient">
+                        {{ i["recipient_name"] }}
+                    </div>
+
+                    <div class="email-title">
+                        {{ i["title"] }}
+                    </div>
+
+                    <div class="email-time">
+                        {{ i["time_sent"] }}
+                    </div>
+
+                </a>
+
+            {% endfor %}
+
+        </ul>
+
+    {% else %}
+
+        <div class="empty-sent">
+            You haven't sent any emails yet.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block head %}
+
+<title>{{ email["title"] }}</title>
+
+<style>
+    body {
+        margin: 0;
+        background-color: #f4f6f8;
+        font-family: Arial, sans-serif;
+        color: #222;
+    }
+
+    .email-container {
+        max-width: 900px;
+        margin: 50px auto;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .email-header {
+        padding: 25px 30px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .email-header h1 {
+        margin: 0 0 15px 0;
+        font-size: 26px;
+    }
+
+    .email-info {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .email-body {
+        padding: 30px;
+        min-height: 250px;
+        line-height: 1.6;
+    }
+
+    .back-button {
+        display: inline-block;
+        margin: 20px 30px 0;
+        text-decoration: none;
+        color: #555;
+    }
+
+    .back-button:hover {
+        color: #000;
+    }
+
+    .email-actions {
+        display: flex;
+        gap: 10px;
+        margin: 20px 30px 0;
+    }
+
+    .back-button,
+    .reply-button {
+        display: inline-block;
+        padding: 9px 15px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+    }
+    .reply-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: flex-end;
+        height: 17px;
+    }
+    
+    .back-button {
+        color: #555;
+        background-color: #eee;
+    }
+
+    .reply-button {
+        background-color: #22c55e;
+    }
+
+    .reply-button:hover {
+        background-color: #16a34a;
+    }
+
+    .back-button:hover {
+        background-color: #ddd;
+    }
+
+
+</style>
+
+{% endblock %}
+
+
+{% block body %}
+
+<div class="email-container">
+
+    <div class="email-header">
+
+        <h1>
+            {{ email["title"] }}
+        </h1>
+
+        <div class="email-info">
+            From: {{ email["sender_name"] }} ({{ email["sender"] }})
+        </div>
+
+        <div class="email-info">
+            To: {{ email["recipient_name"] }} ({{ email["recipient"] }})
+        </div>
+
+        <div class="email-info">
+            {{ email["time_sent"] }}
+        </div>
+
+    </div>
+
+    <div class="email-body">
+        {{ email["description"] }}
+    </div>
+
+    <div class="email-actions">
+
+    <a href="{{ url_for('inbox') }}" class="back-button">
+        &lt;&lt;&lt; Back to Inbox
+    </a>
+
+    {% if email["sender"] != session_username %}
+        <a href="{{ url_for('reply', email_id=email['email_id']) }}"
+           class="reply-button">Reply</a>
+    {% endif %}
+
+</div>
+
+</div>
+
+{% endblock %}

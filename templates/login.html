@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Login</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 35px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .login-container h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .login-form label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .login-form input[type="text"],
+        .login-form input[type="password"] {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .login-form input[type="text"]:focus,
+        .login-form input[type="password"]:focus {
+            border-color: #33d656;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.15);
+        }
+
+        .login-form input[type="submit"] {
+            margin-top: 20px;
+            padding: 12px;
+            border: none;
+            border-radius: 7px;
+            background: #33d656;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .login-form input[type="submit"]:hover {
+            background: #33d656;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 14px;
+            color: #666;
+        }
+        .red-text {
+            text-align: center;
+            font-size: 14px;
+            color: #f00;
+        }
+        .register-link a {
+            color: #33d656;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="login-container">
+        <h1>Login</h1>
+
+        <form action="/login" method="POST" class="login-form">
+            <p class="red-text">{{ message }}</p>
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" required>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required>
+
+            <input type="submit" value="Login">
+        </form>
+
+        <div class="register-link">
+            Don't have an account yet?
+            <a href="/register">Register here</a>
+        </div>
+    </div>
+{% endblock %}
